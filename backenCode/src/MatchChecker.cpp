@@ -1,7 +1,7 @@
 #include "MatchChecker.h"
 
 #include <cmath>
-
+using namespace std;
 //计算两个坐标之间的距离
 double distance(Position startPosition,Position endPosition2){
     return std::sqrt(pow(endPosition2.rows - startPosition.rows,2) + pow(endPosition2.cols - startPosition.cols,2));

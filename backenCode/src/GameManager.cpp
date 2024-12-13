@@ -2,6 +2,8 @@
 #include "MatchChecker.h"
 #include "DrawPath.h"
 #include <iomanip>
+using namespace std;
+string canLink ="";
 GameManager::GameManager(string difficulty)
 {
     readFileToGrid(difficulty);
@@ -12,7 +14,7 @@ GameManager::~GameManager()
 }
 void GameManager::readFileToGrid(string difficulty){
     //打开文件进行读取
-    ifstream inputFile("C:\\Users\\huanghao\\Desktop\\llk\\GridDataFile\\" + difficulty + ".txt");//../GridDataFile/data.txt
+    ifstream inputFile("../GridDataFile/" + difficulty + ".txt");//../GridDataFile/data.txt
     if(!inputFile.is_open()){
         std::cerr << "无法打开文件进行读取"<<endl;
         return;
@@ -57,20 +59,19 @@ bool GameManager::isEmptyGrid(){
     cout << "游戏结束"<<endl;
     return true;
 }
-void GameManager::operate(){
-    int row;
-    int col;
+void GameManager::operate(int r1,int c1,int r2,int c2){
+    int row =r1;
+    int col =c1;
     cout <<"输入你想消除的两个图片: ";
-    cin >> row >> col;
-    
     ImageData startImage = grid[row][col];
     cout <<startImage.imageType <<endl;
-    
-    cin >> row >> col;
+    row=r2;
+    col=c2;
     ImageData endImage = grid[row][col];
     cout <<endImage.imageType <<endl;
     if(connectable(*this, startImage, endImage)){
         cout << "两图片可以被消除"<<endl;
+        canLink="true";
         cout <<"连接路径："<<endl;
         vector<Position> connectPath = findConnectablePath(*this, startImage, endImage);
         drawConnectPath(connectPath);
@@ -81,6 +82,7 @@ void GameManager::operate(){
 
     }else{
         cout << "两图片不能消除"<<endl;
+        canLink="false";
     }
     
 }
@@ -100,15 +102,12 @@ void GameManager::drawConnectPath(const vector<Position>& path) {
     cout << endl;
 }
 
-void GameManager::run(){
-    
+string GameManager::run(int r1,int c1,int r2,int c2){
     //在矩阵还有元素不为零的情况下，保持循环
-    while(!isEmptyGrid()){
         printGrid();
-        operate();
-    }
-    cout << "你的分数为：" << getPlayerScore() << endl;
-    
+        operate(r1,c1,r2,c2);
+        cout<<canLink<<endl;
+        return canLink;
 }
 int GameManager::getPlayerScore(){
     return playerScore;

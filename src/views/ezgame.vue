@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import anime from 'animejs';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import bgmusic_ from '../music/ez1.flac'
 import rightmusic_ from '../music/right.mp3'
+import wrongmusic_ from '../music/wrong.mp3'
 import ezbg from '../icons/ezbg.mp4'
 import tourist from '../assets/icons/avatar.png'
+import axios from 'axios';
 
 
 const sltbut = ref();
@@ -12,18 +14,19 @@ const bfbut = ref();
 const select1 = ref(null);
 const bgmusic = ref(new Audio(bgmusic_))
 const rightmusic = ref(new Audio(rightmusic_))
+const wrongmusic =ref(new Audio(wrongmusic_))
 const hpnums = ref(100);
+const allnums = ref(40);
 const result = ref(0);
 const comble =ref(0);
 let intervalId:number |null =null;
+const isTrue =ref("");
+const selectmessage =ref("");
 // const wrongmusic = ref(new Audio('./src/music/wrong.mp3'))
 
 const drs =()=>{
     if(hpnums.value>0){
         hpnums.value--;
-    }
-    else{
-        console.log('faile');
     }
 }
 
@@ -38,24 +41,8 @@ const isselected =(e:MouseEvent)=>{
     const btn = e.target as HTMLButtonElement;
     sltbut.value=btn;
     console.log(btn.value);  
-    
 }
-// const matchsuccess=(e1:HTMLButtonElement,e2:HTMLButtonElement)=>{
-//     anime({
-//         targets:[e1,e2],
-//         scale:0
-//     }).finished
-// }
-
-// const matchfaild=(e1:HTMLButtonElement,e2:HTMLButtonElement)=>{
-//     anime({
-//         targets:[e1,e2],
-//         scale:1
-//     }).finished
-// }
-
-const matchpos=(e1:HTMLButtonElement,e2:HTMLButtonElement)=>{
-    console.log(e1.value +"+"+ e2.value);
+const matchsuccess=(e1:HTMLButtonElement,e2:HTMLButtonElement)=>{
     hpnums.value+=10;
     anime({
         targets:[e1,e2],
@@ -66,6 +53,7 @@ const matchpos=(e1:HTMLButtonElement,e2:HTMLButtonElement)=>{
     clearInterval(intervalId!);
     intervalId=setInterval(nocomble,2000);
     result.value+=5;
+    allnums.value--;
     switch(comble.value){
         case 1:break;
         case 2:break;
@@ -73,6 +61,35 @@ const matchpos=(e1:HTMLButtonElement,e2:HTMLButtonElement)=>{
             targets:'.combo',
             opacity:1
         }); break
+    }
+}
+
+const matchfaild=(e1:HTMLButtonElement,e2:HTMLButtonElement)=>{
+    wrongmusic.value.play();
+    anime({
+        targets:[e1,e2],
+        scale:1
+    }).finished
+}
+
+const istrue =async()=>{
+    try {
+        const response = await axios.post("http://localhost:11451/selected",selectmessage.value);
+        isTrue.value=JSON.parse(response.data);
+    } catch (error) {
+        console.error("Error fetching state:", error);
+    }
+}
+
+const matchpos=async (e1:HTMLButtonElement,e2:HTMLButtonElement)=>{
+    console.log(e1.value +","+ e2.value);
+    selectmessage.value=`${e1.value},${e2.value}`;
+    await istrue();
+    if(isTrue.value){
+        matchsuccess(e1,e2);
+    }
+    else{
+        matchfaild(e1,e2);
     }
 }
 
@@ -122,8 +139,22 @@ onMounted(()=>{
     setTimeout(() => {
         bgmusic.value.play();
   }, 3000);
+
+  setInterval(drs,1000);
+  intervalId = setInterval(nocomble,2000);
 })
 
+watch(allnums,(value)=>{
+    if(value<=0){
+        console.log('out!');
+    }
+})
+
+watch(hpnums,(value)=>{
+    if(value<=0){
+        console.log('out!');
+    }
+})
 const colors = [
   { color: '#f56c6c', percentage: 20 },
   { color: '#e6a23c', percentage: 40 },
@@ -131,9 +162,6 @@ const colors = [
   { color: '#1989fa', percentage: 80 },
   { color: '#6f7ad3', percentage: 100 },
 ]
-
-setInterval(drs,1000);
-intervalId = setInterval(nocomble,2000);
 </script>
 
 <template>

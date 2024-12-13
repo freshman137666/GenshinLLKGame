@@ -4,6 +4,7 @@ import anime from "animejs";
 import { useRouter } from "vue-router";
 import changemusic_ from '../music/bg_select.flac';
 import selectmusic_ from '../music/select.wav';
+import axios from "axios";
 
 const router =useRouter();
 const animation = ref<anime.AnimeTimelineInstance>();
@@ -156,6 +157,10 @@ animation.value
 
 })
 
+const selectEZ=async()=>{
+  axios.post("http://localhost:11451/startEZ");
+}
+
 watch(selected,(newValue)=>{
   selectmusic.value.play();
   anime({
@@ -168,7 +173,7 @@ watch(selected,(newValue)=>{
   setTimeout(() => {
     switch(newValue)
   {
-    case 1:bgpic.value='bg-1';router.push('/select/1');break;
+    case 1:bgpic.value='bg-1';selectEZ();router.push('/select/1');break;
     case 2:bgpic.value='bg-2';router.push('/select/2');break;
     case 3:bgpic.value='bg-3';router.push('/select/3');break;
     case 4:bgpic.value='bg-4';router.push('/select/4');break;

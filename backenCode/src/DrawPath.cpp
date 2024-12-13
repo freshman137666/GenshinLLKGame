@@ -1,5 +1,5 @@
 #include "DrawPath.h"
-
+using namespace std;
 vector<Position> findConnectablePath(GameManager& gameManager, ImageData startImage, ImageData endImage) {
     if (!edgeConnectable(gameManager,startImage,endImage)||rowConnectable(gameManager,startImage,endImage)||colConnectable(gameManager,startImage,endImage))
     {

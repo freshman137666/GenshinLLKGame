@@ -11,7 +11,7 @@
 //图片坐标结构体
 #include <iostream>
 #include <string>
-using namespace std;
+
 
 struct Position
 {
@@ -27,7 +27,7 @@ struct ImageData
     Position position;//图片坐标
     bool matched;//图片是否已匹配
     bool selected;//是否被选中
-    string imagePath;
+    std::string imagePath;
     ImageData(int imageType = 0,Position position = Position()) 
         : imageType(imageType),position(position) {}
 
