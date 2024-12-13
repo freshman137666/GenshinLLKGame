@@ -6,6 +6,9 @@
 double distance(Position startPosition,Position endPosition2){
     return std::sqrt(pow(endPosition2.rows - startPosition.rows,2) + pow(endPosition2.cols - startPosition.cols,2));
 }
+bool checkImagesEmpty(ImageData startImage,ImageData endImage){
+    return startImage.imageType != 0 && endImage.imageType != 0;
+}
 bool connectable(GameManager& gameManager, ImageData startImage, ImageData endImage) {
     if(startImage.imageType == 0 || endImage.imageType == 0){
         cerr << "图片未加载" << endl;

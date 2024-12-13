@@ -20,7 +20,8 @@ class GameManager
 {
 private:
     /* data */
-    int playerScore = 0;
+    
+    
 public:
     vector<vector<ImageData>> grid;//首先定义一个二维数组
     GameManager(string difficulty);//需要从前端获取游戏难度，从而从对应文件查找信息
@@ -31,10 +32,7 @@ public:
     bool isEmptyGrid();//判断矩阵中是否存在不为零的元素
     void operate();//对矩阵进行操作
     void drawConnectPath(const vector<Position>& path);
-    //获得分数
-    int getPlayerScore() ;
-    //设置分数
-    void setPlayerScore(int playerScore);
+    
     
 };
 

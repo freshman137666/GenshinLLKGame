@@ -18,5 +18,6 @@ bool edgeConnectable(GameManager& gameManager,ImageData startImage,ImageData end
 //使用BFS算法判断两个图像是否可以进行连接
 bool bfsConnectable(GameManager& gameManager,ImageData startImage,ImageData endImage);
 
-
+//检查传入的两个图像是否为空
+bool checkImagesEmpty(ImageData startImage,ImageData endImage);
 #endif

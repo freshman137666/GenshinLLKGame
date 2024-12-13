@@ -1,6 +1,7 @@
 #include "GameManager.h"
 #include "MatchChecker.h"
 #include "DrawPath.h"
+#include "GameFeature.h"
 #include <iomanip>
 GameManager::GameManager(string difficulty)
 {
@@ -77,7 +78,7 @@ void GameManager::operate(){
         cout << "消除图片："<<endl;
         eraseImage(*this, startImage, endImage);
         cout << "消除成功"<<endl;
-        setPlayerScore(getPlayerScore()+1);
+        
 
     }else{
         cout << "两图片不能消除"<<endl;
@@ -104,15 +105,16 @@ void GameManager::run(){
     
     //在矩阵还有元素不为零的情况下，保持循环
     while(!isEmptyGrid()){
+        showHint(*this);
+        bomb(*this);
         printGrid();
         operate();
+        
+        printGrid();
+
     }
-    cout << "你的分数为：" << getPlayerScore() << endl;
+    
     
 }
-int GameManager::getPlayerScore(){
-    return playerScore;
-}
-void GameManager::setPlayerScore(int playerScore){
-    this->playerScore = playerScore;
-}
+
+
