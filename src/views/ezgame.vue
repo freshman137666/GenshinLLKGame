@@ -1,0 +1,703 @@
+<script setup lang="ts">
+import anime from 'animejs';
+import { onMounted, ref } from 'vue';
+import bgmusic_ from '../music/ez1.flac'
+import rightmusic_ from '../music/right.mp3'
+import ezbg from '../icons/ezbg.mp4'
+import tourist from '../assets/icons/avatar.png'
+
+
+const sltbut = ref();
+const bfbut = ref();
+const select1 = ref(null);
+const bgmusic = ref(new Audio(bgmusic_))
+const rightmusic = ref(new Audio(rightmusic_))
+const hpnums = ref(100);
+const result = ref(0);
+const comble =ref(0);
+let intervalId:number |null =null;
+// const wrongmusic = ref(new Audio('./src/music/wrong.mp3'))
+
+const drs =()=>{
+    if(hpnums.value>0){
+        hpnums.value--;
+    }
+    else{
+        console.log('faile');
+    }
+}
+
+const nocomble=()=>{
+    comble.value=0;
+    anime({
+        targets:'.combo',
+        opacity:0
+    }).finished
+}
+const isselected =(e:MouseEvent)=>{
+    const btn = e.target as HTMLButtonElement;
+    sltbut.value=btn;
+    console.log(btn.value);  
+    
+}
+// const matchsuccess=(e1:HTMLButtonElement,e2:HTMLButtonElement)=>{
+//     anime({
+//         targets:[e1,e2],
+//         scale:0
+//     }).finished
+// }
+
+// const matchfaild=(e1:HTMLButtonElement,e2:HTMLButtonElement)=>{
+//     anime({
+//         targets:[e1,e2],
+//         scale:1
+//     }).finished
+// }
+
+const matchpos=(e1:HTMLButtonElement,e2:HTMLButtonElement)=>{
+    console.log(e1.value +"+"+ e2.value);
+    hpnums.value+=10;
+    anime({
+        targets:[e1,e2],
+        scale:0
+    }).finished
+    rightmusic.value.play();
+    comble.value++;
+    clearInterval(intervalId!);
+    intervalId=setInterval(nocomble,2000);
+    result.value+=5;
+    switch(comble.value){
+        case 1:break;
+        case 2:break;
+        case 3:result.value+=50;anime({
+            targets:'.combo',
+            opacity:1
+        }); break
+    }
+}
+
+const onMouse=()=>{
+    if(sltbut.value==null)return;
+    if(bfbut.value!=sltbut.value)
+{
+    anime({
+    targets:sltbut.value,
+    scale:1.5
+          }).finished
+    bfbut.value=sltbut.value;
+    if(select1.value==null){
+    select1.value=sltbut.value;
+    }
+else{
+    const s1 =select1.value as HTMLButtonElement;
+    const s2 =sltbut.value as HTMLButtonElement;
+    matchpos(s1,s2);
+    select1.value=null;
+    sltbut.value=null;
+    bfbut.value=null;
+    }
+}
+    else{
+        anime({
+            targets:sltbut.value,
+            scale:1
+        }).finished
+        bfbut.value=null;
+        select1.value=null;
+    }
+}
+
+onMounted(()=>{
+    anime({
+        targets:'.rows',
+        
+        scale: [
+    {value: .1, easing: 'easeOutSine', duration: 500},
+    {value: 1, easing: 'easeInOutQuad', duration: 1200}
+  ],
+  delay: anime.stagger(200, {grid: [14, 5], from: 'center'})
+    }).finished
+
+    bgmusic.value.volume=0.3;
+    setTimeout(() => {
+        bgmusic.value.play();
+  }, 3000);
+})
+
+const colors = [
+  { color: '#f56c6c', percentage: 20 },
+  { color: '#e6a23c', percentage: 40 },
+  { color: '#5cb87a', percentage: 60 },
+  { color: '#1989fa', percentage: 80 },
+  { color: '#6f7ad3', percentage: 100 },
+]
+
+setInterval(drs,1000);
+intervalId = setInterval(nocomble,2000);
+</script>
+
+<template>
+<div class="container">
+    <video :src="ezbg"  autoplay loop playsinline class="bg"></video>
+    <div class="play" @click="onMouse">
+        <el-row :gutter="10" class="rows">
+            <el-col :span="3" class="cols">
+                <button class="bA" value="1-1" @click="isselected"></button>
+        </el-col>
+            <el-col :span="3" class="cols">
+                <button class="bB" value="1-2" @click="isselected"></button>
+            </el-col>
+            <el-col :span="3" class="cols">
+                <button class="bC" value="1-3" @click="isselected"></button>
+            </el-col>
+            <el-col :span="3" class="cols">
+                <button class="bD" value="1-4" @click="isselected"></button>
+            </el-col>
+            <el-col :span="3" class="cols">
+                <button class="bE" value="1-5" @click="isselected"></button>
+            </el-col>
+            <el-col :span="3" class="cols">
+                <button class="bF" value="1-6" @click="isselected"></button>
+            </el-col>
+            <el-col :span="3" class="cols">
+                <button class="bG" value="1-7" @click="isselected"></button>
+            </el-col>
+            <el-col :span="3" class="cols">
+                <button class="bA" value="1-8" @click="isselected"></button>
+            </el-col>
+        </el-row>
+        <el-row :gutter="10" class="rows">
+            <el-col :span="3" class="cols">
+                <button class="bH" value="2-1" @click="isselected"></button>
+            </el-col>
+            <el-col :span="3" class="cols">
+                <button class="bI" value="2-2" @click="isselected"></button>
+            </el-col>
+            <el-col :span="3" class="cols">
+                <button class="bF" value="2-3" @click="isselected"></button>
+            </el-col>
+            <el-col :span="3" class="cols">
+                <button class="bB" value="2-4" @click="isselected"></button>
+            </el-col>
+            <el-col :span="3" class="cols">
+                <button class="bJ" value="2-5" @click="isselected"></button>
+            </el-col>
+            <el-col :span="3" class="cols">
+                <button class="bE" value="2-6" @click="isselected"></button>
+            </el-col>
+            <el-col :span="3" class="cols">
+                <button class="bK" value="2-7" @click="isselected"></button>
+            </el-col>
+            <el-col :span="3" class="cols">
+                <button class="bF" value="2-8" @click="isselected"></button>
+            </el-col>
+        </el-row>
+        <el-row :gutter="10" class="rows">
+            <el-col :span="3" class="cols">
+                <button class="bA" value="3-1" @click="isselected"></button>
+            </el-col>
+            <el-col :span="3" class="cols">
+                <button class="bK" value="3-2" @click="isselected"></button>
+            </el-col>
+            <el-col :span="3" class="cols">
+                <button class="bK" value="3-3" @click="isselected"></button>
+            </el-col>
+            <el-col :span="3" class="cols">
+                <button class="bI" value="3-4" @click="isselected"></button>
+            </el-col>
+            <el-col :span="3" class="cols">
+                <button class="bL" value="3-5" @click="isselected"></button>
+            </el-col>
+            <el-col :span="3" class="cols">
+                <button class="bC" value="3-6" @click="isselected"></button>
+            </el-col>
+            <el-col :span="3" class="cols">
+                <button class="bM" value="3-7" @click="isselected"></button>
+            </el-col>
+            <el-col :span="3" class="cols">
+                <button class="bM" value="3-8" @click="isselected"></button>
+            </el-col>
+        </el-row>
+        <el-row :gutter="10" class="rows">
+            <el-col :span="3" class="cols">
+                <button class="bL" value="4-1" @click="isselected"></button>
+            </el-col>
+            <el-col :span="3" class="cols">
+                <button class="bN" value="4-2" @click="isselected"></button>
+            </el-col>
+            <el-col :span="3" class="cols">
+                <button class="bC" value="4-3" @click="isselected"></button>
+            </el-col>
+            <el-col :span="3" class="cols">
+                <button class="bO" value="4-4" @click="isselected"></button>
+            </el-col>
+            <el-col :span="3" class="cols">
+                <button class="bD" value="4-5" @click="isselected"></button>
+            </el-col>
+            <el-col :span="3" class="cols">
+                <button class="bE" value="4-6" @click="isselected"></button>
+            </el-col>
+            <el-col :span="3" class="cols">
+                <button class="bA" value="4-7" @click="isselected"></button>
+            </el-col>
+            <el-col :span="3" class="cols">
+                <button class="bN" value="4-8" @click="isselected"></button>
+            </el-col>
+        </el-row>
+        <el-row :gutter="10" class="rows">
+            <el-col :span="3" class="cols">
+                <button class="bP" value="5-1" @click="isselected"></button>
+            </el-col>
+            <el-col :span="3" class="cols">
+                <button class="bB" value="5-2" @click="isselected"></button>
+            </el-col>
+            <el-col :span="3" class="cols">
+                <button class="bP" value="5-3" @click="isselected"></button>
+            </el-col>
+            <el-col :span="3" class="cols">
+                <button class="bQ" value="5-4" @click="isselected"></button>
+            </el-col>
+            <el-col :span="3" class="cols">
+                <button class="bG" value="5-5" @click="isselected"></button>
+            </el-col>
+            <el-col :span="3" class="cols">
+                <button class="bF" value="5-6" @click="isselected"></button>
+            </el-col>
+            <el-col :span="3" class="cols">
+                <button class="bL" value="5-7" @click="isselected"></button>
+            </el-col>
+            <el-col :span="3" class="cols">
+                <button class="bR" value="5-8" @click="isselected"></button>
+            </el-col>
+        </el-row>
+        <el-row :gutter="10" class="rows">
+            <el-col :span="3" class="cols">
+                <button class="bN" value="6-1" @click="isselected"></button>
+            </el-col>
+            <el-col :span="3" class="cols">
+                <button class="bJ" value="6-2" @click="isselected"></button>
+            </el-col>
+            <el-col :span="3" class="cols">
+                <button class="bP" value="6-3" @click="isselected"></button>
+            </el-col>
+            <el-col :span="3" class="cols">
+                <button class="bK" value="6-4" @click="isselected"></button>
+            </el-col>
+            <el-col :span="3" class="cols">
+                <button class="bH" value="6-5" @click="isselected"></button>
+            </el-col>
+            <el-col :span="3" class="cols">
+                <button class="bH" value="6-6" @click="isselected"></button>
+            </el-col>
+            <el-col :span="3" class="cols">
+                <button class="bD" value="6-7" @click="isselected"></button>
+            </el-col>
+            <el-col :span="3" class="cols">
+                <button class="bB" value="6-8" @click="isselected"></button>
+            </el-col>
+        </el-row>
+        <el-row :gutter="10" class="rows">
+            <el-col :span="3" class="cols">
+                <button class="bG" value="7-1" @click="isselected"></button>
+            </el-col>
+            <el-col :span="3" class="cols">
+                <button class="bQ" value="7-2" @click="isselected"></button>
+            </el-col>
+            <el-col :span="3" class="cols">
+                <button class="bF" value="7-3" @click="isselected"></button>
+            </el-col>
+            <el-col :span="3" class="cols">
+                <button class="bP" value="7-4" @click="isselected"></button>
+            </el-col>
+            <el-col :span="3" class="cols">
+                <button class="bP" value="7-5" @click="isselected"></button>
+            </el-col>
+            <el-col :span="3" class="cols">
+                <button class="bH" value="7-6" @click="isselected"></button>
+            </el-col>
+            <el-col :span="3" class="cols">
+                <button class="bA" value="7-7" @click="isselected"></button>
+            </el-col>
+            <el-col :span="3" class="cols">
+                <button class="bQ" value="7-8" @click="isselected"></button>
+            </el-col>
+        </el-row>
+        <el-row :gutter="10" class="rows">
+            <el-col :span="3" class="cols">
+                <button class="bJ" value="8-1" @click="isselected"></button>
+            </el-col>
+            <el-col :span="3" class="cols">
+                <button class="bO" value="8-2" @click="isselected"></button>
+            </el-col>
+            <el-col :span="3" class="cols">
+                <button class="bM" value="8-3" @click="isselected"></button>
+            </el-col>
+            <el-col :span="3" class="cols">
+                <button class="bF" value="8-4" @click="isselected"></button>
+            </el-col>
+            <el-col :span="3" class="cols">
+                <button class="bR" value="8-5" @click="isselected"></button>
+            </el-col>
+            <el-col :span="3" class="cols">
+                <button class="bE" value="8-6" @click="isselected"></button>
+            </el-col>
+            <el-col :span="3" class="cols">
+                <button class="bD" value="8-7" @click="isselected"></button>
+            </el-col>
+            <el-col :span="3" class="cols">
+                <button class="bO" value="8-8" @click="isselected"></button>
+            </el-col>
+        </el-row>
+        <el-row :gutter="10" class="rows">
+            <el-col :span="3" class="cols">
+                <button class="bC" value="9-1" @click="isselected"></button>
+            </el-col>
+            <el-col :span="3" class="cols">
+                <button class="bO" value="9-2" @click="isselected"></button>
+            </el-col>
+            <el-col :span="3" class="cols">
+                <button class="bN" value="9-3" @click="isselected"></button>
+            </el-col>
+            <el-col :span="3" class="cols">
+                <button class="bP" value="9-4" @click="isselected"></button>
+            </el-col>
+            <el-col :span="3" class="cols">
+                <button class="bC" value="9-5" @click="isselected"></button>
+            </el-col>
+            <el-col :span="3" class="cols">
+                <button class="bM" value="9-6" @click="isselected"></button>
+            </el-col>
+            <el-col :span="3" class="cols">
+                <button class="bI" value="9-7" @click="isselected"></button>
+            </el-col>
+            <el-col :span="3" class="cols">
+                <button class="bR" value="9-8" @click="isselected"></button>
+            </el-col>
+        </el-row>
+        <el-row :gutter="10" class="rows">
+            <el-col :span="3" class="cols">
+                <button class="bQ" value="10-1" @click="isselected"></button>
+            </el-col>
+            <el-col :span="3" class="cols">
+                <button class="bJ" value="10-2" @click="isselected"></button>
+            </el-col>
+            <el-col :span="3" class="cols">
+                <button class="bL" value="10-3" @click="isselected"></button>
+            </el-col>
+            <el-col :span="3" class="cols">
+                <button class="bC" value="10-4" @click="isselected"></button>
+            </el-col>
+            <el-col :span="3" class="cols">
+                <button class="bI" value="10-5" @click="isselected"></button>
+            </el-col>
+            <el-col :span="3" class="cols">
+                <button class="bR" value="10-6" @click="isselected"></button>
+            </el-col>
+            <el-col :span="3" class="cols">
+                <button class="bG" value="10-7" @click="isselected"></button>
+            </el-col>
+            <el-col :span="3" class="cols">
+                <button class="bA" value="10-8" @click="isselected"></button>
+            </el-col>
+        </el-row>
+    </div>
+    <el-avatar class="avatar" :size="100" :src="tourist" />
+    <div class="hp">
+        <el-progress type="dashboard" :percentage="hpnums" :color="colors" :width="140"/>
+    </div>
+    <el-text class="score">得分:{{ result }}</el-text>
+    <el-text class="combo">COMBO! {{ comble }}</el-text>
+    
+        
+
+</div>
+</template>
+
+<style scoped>
+.score{
+    font-size: 7vw;
+    color: aliceblue;
+    margin-left: 20px;
+    margin-top: 20px;
+}
+.combo{
+    font-size: 3vw;
+    position: absolute;
+    top: 130px;
+    left: 30px;
+    color: #B15737;
+    opacity: 0;
+}
+.hp{
+    position: absolute;
+    bottom: 24px;
+    left: 25px;
+}
+.avatar{
+    position: absolute;
+    height: 130px;
+    width: 130px;
+    bottom: 30px;
+    left: 30px;
+}
+.bg{
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  object-fit: cover;
+  object-position: left;
+}
+
+.play{
+    position: absolute;
+    background: rgba(255, 235, 205,0.5);
+    width: 48vw;
+    height: 68vh;
+    left: 50vw;
+    top: 4vh;
+}
+.rows{
+    height: 6vh;
+    margin-top: 4px;
+}
+.cols{
+    width: 6vh;
+    height: 6vh; 
+}
+.bA{
+    height: 100%;
+    width: 100%;
+    background: url(../assets/icons/abc/A.png);
+    background-position: center;
+    background-size: cover;
+    border: none;
+    opacity:1 ;
+    isolation: isolate;
+    border: 1px;
+    border-style: solid;
+    border-color: gold;
+}
+.bB{
+
+    height: 100%;
+    width: 100%;
+    background: url(../assets/icons/abc/B.png);
+    background-position: center;
+    background-size: cover;
+    border: none;
+    opacity:1 ;
+    isolation: isolate;
+    border: 1px;
+    border-style: solid;
+    border-color: gold;
+}
+.bC{
+    height: 100%;
+    width: 100%;
+    background: url(../assets/icons/abc/C.png);
+    background-position: center;
+    background-size: cover;
+    border: none;
+    opacity:1 ;
+    isolation: isolate;
+    border: 1px;
+    border-style: solid;
+    border-color: gold;
+}
+.bD{
+    height: 100%;
+    width: 100%;
+    background: url(../assets/icons/abc/D.png);
+    background-position: center;
+    background-size: cover;
+    border: none;
+    opacity:1 ;
+    isolation: isolate;
+    border: 1px;
+    border-style: solid;
+    border-color: gold;
+}
+.bE{
+    height: 100%;
+    width: 100%;
+    background: url(../assets/icons/abc/E.png);
+    background-position: center;
+    background-size: cover;
+    border: none;
+    opacity:1 ;
+    isolation: isolate;
+    border: 1px;
+    border-style: solid;
+    border-color: gold;
+}
+.bF{
+    height: 100%;
+    width: 100%;
+    background: url(../assets/icons/abc/F.png);
+    background-position: center;
+    background-size: cover;
+    border: none;
+    opacity:1 ;
+    isolation: isolate;
+    border: 1px;
+    border-style: solid;
+    border-color: gold;
+}
+.bG{
+    height: 100%;
+    width: 100%;
+    background: url(../assets/icons/abc/G.png);
+    background-position: center;
+    background-size: cover;
+    border: none;
+    opacity:1 ;
+    isolation: isolate;
+    border: 1px;
+    border-style: solid;
+    border-color: gold;
+}
+.bH{
+    height: 100%;
+    width: 100%;
+    background: url(../assets/icons/abc/H.png);
+    background-position: center;
+    background-size: cover;
+    border: none;
+    opacity:1 ;
+    isolation: isolate;
+    border: 1px;
+    border-style: solid;
+    border-color: gold;
+}
+.bI{
+    height: 100%;
+    width: 100%;
+    background: url(../assets/icons/abc/I.png);
+    background-position: center;
+    background-size: cover;
+    border: none;
+    opacity:1 ;
+    isolation: isolate;
+    border: 1px;
+    border-style: solid;
+    border-color: gold;
+}
+.bJ{
+    height: 100%;
+    width: 100%;
+    background: url(../assets/icons/abc/J.png);
+    background-position: center;
+    background-size: cover;
+    border: none;
+    opacity:1 ;
+    isolation: isolate;
+    border: 1px;
+    border-style: solid;
+    border-color: gold;
+}
+.bK{
+    height: 100%;
+    width: 100%;
+    background: url(../assets/icons/abc/K.png);
+    background-position: center;
+    background-size: cover;
+    border: none;
+    opacity:1 ;
+    isolation: isolate;
+    border: 1px;
+    border-style: solid;
+    border-color: gold;
+}
+.bL{
+    height: 100%;
+    width: 100%;
+    background: url(../assets/icons/abc/L.png);
+    background-position: center;
+    background-size: cover;
+    border: none;
+    opacity:1 ;
+    isolation: isolate;
+    border: 1px;
+    border-style: solid;
+    border-color: gold;
+}
+.bM{
+    height: 100%;
+    width: 100%;
+    background: url(../assets/icons/abc/M.png);
+    background-position: center;
+    background-size: cover;
+    border: none;
+    opacity:1 ;
+    isolation: isolate;
+    border: 1px;
+    border-style: solid;
+    border-color: gold;
+}
+.bN{
+    height: 100%;
+    width: 100%;
+    background: url(../assets/icons/abc/N.png);
+    background-position: center;
+    background-size: cover;
+    border: none;
+    opacity:1 ;
+    isolation: isolate;
+    border: 1px;
+    border-style: solid;
+    border-color: gold;
+}
+.bO{
+    height: 100%;
+    width: 100%;
+    background: url(../assets/icons/abc/O.png);
+    background-position: center;
+    background-size: cover;
+    border: none;
+    opacity:1 ;
+    isolation: isolate;
+    border: 1px;
+    border-style: solid;
+    border-color: gold;
+}
+.bP{
+    height: 100%;
+    width: 100%;
+    background: url(../assets/icons/abc/P.png);
+    background-position: center;
+    background-size: cover;
+    border: none;
+    opacity:1 ;
+    isolation: isolate;
+    border: 1px;
+    border-style: solid;
+    border-color: gold;
+}
+.bQ{
+    height: 100%;
+    width: 100%;
+    background: url(../assets/icons/abc/Q.png);
+    background-position: center;
+    background-size: cover;
+    border: none;
+    opacity:1 ;
+    isolation: isolate;
+    border: 1px;
+    border-style: solid;
+    border-color: gold;
+}
+.bR{
+    height: 100%;
+    width: 100%;
+    background: url(../assets/icons/abc/R.png);
+    background-position: center;
+    background-size: cover;
+    border: none;
+    opacity:1 ;
+    isolation: isolate;
+    border: 1px;
+    border-style: solid;
+    border-color: gold;
+}
+</style>
