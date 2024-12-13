@@ -1,6 +1,7 @@
 #include "GameManager.h"
 #include "MatchChecker.h"
 #include "DrawPath.h"
+#include "GameFeature.h"
 #include <iomanip>
 using namespace std;
 string canLink ="";
@@ -78,7 +79,7 @@ void GameManager::operate(int r1,int c1,int r2,int c2){
         cout << "消除图片："<<endl;
         eraseImage(*this, startImage, endImage);
         cout << "消除成功"<<endl;
-        setPlayerScore(getPlayerScore()+1);
+        
 
     }else{
         cout << "两图片不能消除"<<endl;
@@ -109,9 +110,5 @@ string GameManager::run(int r1,int c1,int r2,int c2){
         cout<<canLink<<endl;
         return canLink;
 }
-int GameManager::getPlayerScore(){
-    return playerScore;
-}
-void GameManager::setPlayerScore(int playerScore){
-    this->playerScore = playerScore;
-}
+
+

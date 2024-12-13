@@ -20,7 +20,8 @@ class GameManager
 {
 private:
     /* data */
-    int playerScore = 0;
+    
+    
 public:
     std::vector<std::vector<ImageData>> grid;//首先定义一个二维数组
     GameManager(std::string difficulty);//需要从前端获取游戏难度，从而从对应文件查找信息
