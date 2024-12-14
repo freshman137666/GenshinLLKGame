@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { onMounted,  ref } from "vue";
+import { onMounted,  reactive,  ref } from "vue";
 import anime from "animejs";
 import { useRouter } from "vue-router";
+import { useStore } from "../store/counter";
 import bgmusic_ from '../music/bg1.flac';
 import hello_ from '../music/hellokeli.mp3';
 import flower1 from '../icons/flower1.png'
@@ -11,19 +12,51 @@ import boom2 from '../icons/boom2.png'
 import boom3 from '../icons/boom3.png'
 import keli from '../icons/keli.png'
 import backgroundImage from '../icons/login_background.png';
+import { FormInstance, FormRules } from "element-plus";
+
 
 const router =useRouter();
 const animation = ref<anime.AnimeInstance>();
 const animatline = ref<anime.AnimeTimelineInstance>();
 
+  const dialogFormVisible = ref(false)
+  const counterStore =useStore();
+  const ruleFormRef = ref<FormInstance>();
+
+
+
+  interface RuleForm{
+    name:string
+  }
+  const rules = reactive<FormRules<RuleForm>>({
+     name: [
+    { required: true, message: '请输入用户名', trigger: 'blur' },
+    { min: 3, max: 5, message: '最少3个字符', trigger: 'blur' },
+  ],
+  })
+  const form = reactive<RuleForm>({
+  name: "",
+})
+
 const flower=[".flo1",".flo2",".flo3",".flo4",".flo5",".flo6",".flo7",".flo8",".flo9",".flo10"];
 const bgmusic=ref(new Audio(bgmusic_));
 const hello=ref(new Audio(hello_));
 
-const startgame = ()=>{
-  bgmusic.value.pause();
-  hello.value.pause();
- router.push('/select');
+
+const startgame = (formEl: FormInstance)=>{
+  
+  formEl.validate((valid, fields)=>{
+    if(valid){
+      dialogFormVisible.value = false;
+      counterStore.name=form.name;
+      bgmusic.value.pause();
+      hello.value.pause();
+      router.push('/select');
+    }
+    else{
+      console.log('error submit!', fields)
+    }
+  })
 }
 
 const playbackground=()=>{
@@ -164,9 +197,26 @@ anime({
     <img :src="boom2" class="boom2">
     <img :src="boom3" class="boom3">
     <img :src="keli" class="keli">
-    <el-button type="warning" round class="startb" size="large" @click="startgame" >点击开始游戏</el-button>
+    <el-button type="warning" round class="startb" size="large" @click="dialogFormVisible =true" >点击开始游戏</el-button>
   </div>
  </main>
+
+ <el-dialog v-model="dialogFormVisible" title="账户登录" width="500">
+    <el-form :model="form" :rules="rules" ref="ruleFormRef">
+      <el-form-item label="用户名" :label-width="0" prop="name">
+        <el-input v-model="form.name" autocomplete="off" />
+      </el-form-item>
+    </el-form>
+    <template #footer>
+      <div class="dialog-footer">
+        <el-form-item>
+            <el-button type="primary" @click="startgame(ruleFormRef!)">
+          登陆
+            </el-button>
+        </el-form-item>
+      </div>
+    </template>
+  </el-dialog>
 </template>
 
 <style scoped>

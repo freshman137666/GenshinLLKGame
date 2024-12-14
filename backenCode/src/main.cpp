@@ -4,17 +4,24 @@
 using namespace std;
 
 void connectNet(){
-    GameManager gameManager("easy");
+    GameManager gameManager("");
     httplib::Server svr;
     svr.set_default_headers({
         { "Access-Control-Allow-Origin" , "*" }
         });
 
-        svr.Post("/startEZ",[&gameManager](const httplib::Request &req , httplib::Response &res){
+    svr.Post("/startEZ",[&gameManager](const httplib::Request &req , httplib::Response &res){
+        cout<<"easy"<<endl;
         gameManager=GameManager("easy");
     });
 
+    svr.Post("/startEX",[&gameManager](const httplib::Request &req , httplib::Response &res){
+        cout<<"hard"<<endl;
+        gameManager=GameManager("difficult");
+    });
+
     svr.Post("/selected",[&gameManager](const httplib::Request &req , httplib::Response &res){
+        cout<<req.body<<endl;
         stringstream ss(req.body);
         int x1,x2,x3,x4;
         char temp;

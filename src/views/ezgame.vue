@@ -7,7 +7,9 @@ import wrongmusic_ from '../music/wrong.mp3'
 import ezbg from '../icons/ezbg.mp4'
 import tourist from '../assets/icons/avatar.png'
 import axios from 'axios';
+import { useRouter } from 'vue-router';
 
+const router =useRouter();
 
 const sltbut = ref();
 const bfbut = ref();
@@ -22,8 +24,15 @@ const comble =ref(0);
 let intervalId:number |null =null;
 const isTrue =ref("");
 const selectmessage =ref("");
-// const wrongmusic = ref(new Audio('./src/music/wrong.mp3'))
 
+const centerDialogVisible = ref(false)
+const endgame =()=>{
+    centerDialogVisible.value = true
+}
+const returnSelect=()=>{
+    centerDialogVisible.value =false;
+    router.push('/select');
+}
 const drs =()=>{
     if(hpnums.value>0){
         hpnums.value--;
@@ -43,7 +52,7 @@ const isselected =(e:MouseEvent)=>{
     console.log(btn.value);  
 }
 const matchsuccess=(e1:HTMLButtonElement,e2:HTMLButtonElement)=>{
-    hpnums.value+=10;
+    hpnums.value+=20;
     anime({
         targets:[e1,e2],
         scale:0
@@ -52,15 +61,30 @@ const matchsuccess=(e1:HTMLButtonElement,e2:HTMLButtonElement)=>{
     comble.value++;
     clearInterval(intervalId!);
     intervalId=setInterval(nocomble,2000);
-    result.value+=5;
+    result.value+=10;
     allnums.value--;
     switch(comble.value){
         case 1:break;
-        case 2:break;
-        case 3:result.value+=50;anime({
+        case 2:result.value+=10;anime({
             targets:'.combo',
             opacity:1
-        }); break
+        });break;
+        case 3:result.value+=30;anime({
+            targets:'.combo',
+            opacity:1
+        }); break;
+        case 4:result.value+=60;anime({
+            targets:'.combo',
+            opacity:1
+        }); break;
+        case 5:result.value+=100;anime({
+            targets:'.combo',
+            opacity:1
+        }); break;
+        default:result.value+=100;anime({
+            targets:'.combo',
+            opacity:1
+        }); break;
     }
 }
 
@@ -146,13 +170,14 @@ onMounted(()=>{
 
 watch(allnums,(value)=>{
     if(value<=0){
-        console.log('out!');
+        result.value+=hpnums.value*10;
+        endgame();
     }
 })
 
 watch(hpnums,(value)=>{
     if(value<=0){
-        console.log('out!');
+        endgame();
     }
 })
 const colors = [
@@ -165,6 +190,19 @@ const colors = [
 </script>
 
 <template>
+    <button @click="endgame">qwrffas</button>
+    <el-dialog v-model="centerDialogVisible" title="Warning" width="500" center>
+    <span>
+      你的得分：{{ result }}
+    </span>
+    <template #footer>
+      <div class="dialog-footer">
+        <el-button type="primary" @click="returnSelect">
+          Confirm
+        </el-button>
+      </div>
+    </template>
+  </el-dialog>
 <div class="container">
     <video :src="ezbg"  autoplay loop playsinline class="bg"></video>
     <div class="play" @click="onMouse">

@@ -1,47 +1,114 @@
 <script setup lang="ts">
 import anime from 'animejs';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import bgmusic_ from '../music/ez1.flac'
 import rightmusic_ from '../music/right.mp3'
+import wrongmusic_ from '../music/wrong.mp3'
 import hdbg from '../icons/hardbg.mp4'
+import tourist from '../assets/icons/avatar.png'
+import axios from 'axios';
+
+
 
 const sltbut = ref();
 const bfbut = ref();
 const select1 = ref(null);
 const bgmusic = ref(new Audio(bgmusic_))
 const rightmusic = ref(new Audio(rightmusic_))
-// const wrongmusic = ref(new Audio('./src/music/wrong.mp3'))
+const wrongmusic =ref(new Audio(wrongmusic_))
+const hpnums = ref(100);
+const allnums = ref(40);
+const result = ref(0);
+const comble =ref(0);
+let intervalId:number |null =null;
+const isTrue =ref("");
+const selectmessage =ref("");
 
 
+
+const drs =()=>{
+    if(hpnums.value>0){
+        hpnums.value--;
+    }
+}
+
+const nocomble=()=>{
+    comble.value=0;
+    anime({
+        targets:'.combo',
+        opacity:0
+    }).finished
+}
 const isselected =(e:MouseEvent)=>{
     const btn = e.target as HTMLButtonElement;
     sltbut.value=btn;
     console.log(btn.value);  
-    
 }
-// const matchsuccess=(e1:HTMLButtonElement,e2:HTMLButtonElement)=>{
-//     anime({
-//         targets:[e1,e2],
-//         scale:0
-//     }).finished
-// }
-
-// const matchfaild=(e1:HTMLButtonElement,e2:HTMLButtonElement)=>{
-//     anime({
-//         targets:[e1,e2],
-//         scale:1
-//     }).finished
-// }
-
-const matchpos=(e1:HTMLButtonElement,e2:HTMLButtonElement)=>{
-    console.log(e1.value +"+"+ e2.value);
+const matchsuccess=(e1:HTMLButtonElement,e2:HTMLButtonElement)=>{
+    hpnums.value+=10;
     anime({
         targets:[e1,e2],
         scale:0
     }).finished
     rightmusic.value.play();
+    comble.value++;
+    clearInterval(intervalId!);
+    intervalId=setInterval(nocomble,2000);
+    result.value+=10;
+    allnums.value--;
+    switch(comble.value){
+        case 1:break;
+        case 2:result.value+=10;anime({
+            targets:'.combo',
+            opacity:1
+        });break;
+        case 3:result.value+=30;anime({
+            targets:'.combo',
+            opacity:1
+        }); break;
+        case 4:result.value+=60;anime({
+            targets:'.combo',
+            opacity:1
+        }); break;
+        case 5:result.value+=100;anime({
+            targets:'.combo',
+            opacity:1
+        }); break;
+        default:result.value+=100;anime({
+            targets:'.combo',
+            opacity:1
+        }); break;
+}
 }
 
+const matchfaild=(e1:HTMLButtonElement,e2:HTMLButtonElement)=>{
+    wrongmusic.value.play();
+    anime({
+        targets:[e1,e2],
+        scale:1
+    }).finished
+}
+
+const istrue =async()=>{
+    try {
+        const response = await axios.post("http://localhost:11451/selected",selectmessage.value);
+        isTrue.value=JSON.parse(response.data);
+    } catch (error) {
+        console.error("Error fetching state:", error);
+    }
+}
+
+const matchpos=async (e1:HTMLButtonElement,e2:HTMLButtonElement)=>{
+    console.log(e1.value +","+ e2.value);
+    selectmessage.value=`${e1.value},${e2.value}`;
+    await istrue();
+    if(isTrue.value){
+        matchsuccess(e1,e2);
+    }
+    else{
+        matchfaild(e1,e2);
+    }
+}
 const onMouse=()=>{
     if(sltbut.value==null)return;
     if(bfbut.value!=sltbut.value)
@@ -88,7 +155,29 @@ onMounted(()=>{
     setTimeout(() => {
         bgmusic.value.play();
   }, 3000);
+
+  setInterval(drs,1000);
+  intervalId = setInterval(nocomble,2000);
 })
+
+watch(allnums,(value)=>{
+    if(value<=0){
+        console.log('out!');
+    }
+})
+
+watch(hpnums,(value)=>{
+    if(value<=0){
+        console.log('out!');
+    }
+})
+const colors = [
+  { color: '#f56c6c', percentage: 20 },
+  { color: '#e6a23c', percentage: 40 },
+  { color: '#5cb87a', percentage: 60 },
+  { color: '#1989fa', percentage: 80 },
+  { color: '#6f7ad3', percentage: 100 },
+]
 </script>
 
 <template>
@@ -536,11 +625,42 @@ onMounted(()=>{
             </el-col>
         </el-row>
     </div>
-
+    <el-avatar class="avatar" :size="100" :src="tourist" />
+    <div class="hp">
+        <el-progress type="dashboard" :percentage="hpnums" :color="colors" :width="140"/>
+    </div>
+    <el-text class="score">得分:{{ result }}</el-text>
+    <el-text class="combo">COMBO! {{ comble }}</el-text>
 </div>
 </template>
 
 <style scoped>
+.score{
+    font-size: 7vw;
+    color: rgb(63, 155, 236);
+    margin-left: 20px;
+    margin-top: 20px;
+}
+.combo{
+    font-size: 3vw;
+    position: absolute;
+    top: 30px;
+    left: 350px;
+    color: #B15737;
+    opacity: 1;
+}
+.hp{
+    position: absolute;
+    bottom: 24px;
+    right: 25px;
+}
+.avatar{
+    position: absolute;
+    height: 130px;
+    width: 130px;
+    bottom: 30px;
+    right: 30px;
+}
 .bg{
   position: absolute;
   width: 100%;

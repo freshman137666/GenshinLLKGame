@@ -3,6 +3,7 @@
 #include "DrawPath.h"
 #include <random> 
 #include <algorithm>
+using namespace std;
 vector<Position> showHint(GameManager& gameManager) {
     vector<Position> hintPath; // 用于存储提示路径
     vector<vector<ImageData>> grid = gameManager.grid;
