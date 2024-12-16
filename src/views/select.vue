@@ -16,6 +16,7 @@ const selected =ref(0);
 const changemusic = ref(new Audio(changemusic_));
 const selectmusic = ref(new Audio(selectmusic_))
 const bgpic = ref('bg-4');
+const store =useStore();
 
 
 
@@ -162,10 +163,12 @@ animation.value
 
 const selectEZ=async()=>{
   axios.post("http://localhost:11451/startEZ");
+  store.gate.level='OP-1';
 }
 
 const selectEX=async()=>{
   axios.post("http://localhost:11451/startEX");
+  store.gate.level='OP-EX-1';
 }
 
 

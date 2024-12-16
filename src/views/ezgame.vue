@@ -4,19 +4,22 @@ import { onMounted, ref, watch } from 'vue';
 import bgmusic_ from '../music/ez1.flac'
 import rightmusic_ from '../music/right.mp3'
 import wrongmusic_ from '../music/wrong.mp3'
+import endmusic_ from '../assets/music/endgame.wav'
 import ezbg from '../icons/ezbg.mp4'
 import tourist from '../assets/icons/avatar.png'
 import axios from 'axios';
 import { useRouter } from 'vue-router';
+import { useStore } from '../store/counter';
 
 const router =useRouter();
-
+const store =useStore();
 const sltbut = ref();
 const bfbut = ref();
 const select1 = ref(null);
 const bgmusic = ref(new Audio(bgmusic_))
 const rightmusic = ref(new Audio(rightmusic_))
 const wrongmusic =ref(new Audio(wrongmusic_))
+const endmusic =ref(new Audio(endmusic_))
 const hpnums = ref(100);
 const allnums = ref(40);
 const result = ref(0);
@@ -27,6 +30,10 @@ const selectmessage =ref("");
 
 const centerDialogVisible = ref(false)
 const endgame =()=>{
+    endmusic.value.play();
+    store.gate.score=result.value;
+    store.addData();
+    bgmusic.value.pause();
     centerDialogVisible.value = true
 }
 const returnSelect=()=>{
@@ -191,14 +198,14 @@ const colors = [
 
 <template>
     <button @click="endgame">qwrffas</button>
-    <el-dialog v-model="centerDialogVisible" title="Warning" width="500" center>
+    <el-dialog v-model="centerDialogVisible" title="任务成功！！" width="500" center>
     <span>
       你的得分：{{ result }}
     </span>
     <template #footer>
       <div class="dialog-footer">
         <el-button type="primary" @click="returnSelect">
-          Confirm
+          返回主菜单
         </el-button>
       </div>
     </template>

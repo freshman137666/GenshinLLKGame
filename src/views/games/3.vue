@@ -1,38 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import { useStore } from '../../store/counter';
 
+const store=useStore();
 
-const tableData=ref([{
-    name:'大伟哥',
-    level:'OP-1',
-    score:250
-},{
-    name:'门酱',
-    level:'OP-1',
-    score:520
-},{
-    name:'门酱',
-    level:'OP-EX-1',
-    score:520
-},
-{
-    name:'林猪小派蒙',
-    level:'OP-1',
-    score:200
-},{
-    name:'林猪小派蒙',
-    level:'OP-EX-1',
-    score:100
-},{
-    name:'TheWord_sanqi',
-    level:'OP-1',
-    score:0
-},
-{
-    name:'TheWord_sanqi',
-    level:'OP-EX-1',
-    score:0
-}]) 
+const tableData=store.tableData;
 
 </script>
 

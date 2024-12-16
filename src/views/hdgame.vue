@@ -4,18 +4,23 @@ import { onMounted, ref, watch } from 'vue';
 import bgmusic_ from '../music/ez1.flac'
 import rightmusic_ from '../music/right.mp3'
 import wrongmusic_ from '../music/wrong.mp3'
+import endmusic_ from '../assets/music/endgame.wav'
 import hdbg from '../icons/hardbg.mp4'
 import tourist from '../assets/icons/avatar.png'
 import axios from 'axios';
+import { useStore } from '../store/counter';
+import { useRouter } from 'vue-router';
 
 
-
+const router =useRouter();
+const store =useStore();
 const sltbut = ref();
 const bfbut = ref();
 const select1 = ref(null);
 const bgmusic = ref(new Audio(bgmusic_))
 const rightmusic = ref(new Audio(rightmusic_))
 const wrongmusic =ref(new Audio(wrongmusic_))
+const endmusic =ref(new Audio(endmusic_))
 const hpnums = ref(100);
 const allnums = ref(40);
 const result = ref(0);
@@ -25,6 +30,18 @@ const isTrue =ref("");
 const selectmessage =ref("");
 
 
+const centerDialogVisible = ref(false)
+const endgame =()=>{
+    endmusic.value.play();
+    store.gate.score=result.value;
+    store.addData();
+    bgmusic.value.pause();
+    centerDialogVisible.value = true
+}
+const returnSelect=()=>{
+    centerDialogVisible.value =false;
+    router.push('/select');
+}
 
 const drs =()=>{
     if(hpnums.value>0){
@@ -45,7 +62,7 @@ const isselected =(e:MouseEvent)=>{
     console.log(btn.value);  
 }
 const matchsuccess=(e1:HTMLButtonElement,e2:HTMLButtonElement)=>{
-    hpnums.value+=10;
+    hpnums.value+=20;
     anime({
         targets:[e1,e2],
         scale:0
@@ -78,7 +95,7 @@ const matchsuccess=(e1:HTMLButtonElement,e2:HTMLButtonElement)=>{
             targets:'.combo',
             opacity:1
         }); break;
-}
+    }
 }
 
 const matchfaild=(e1:HTMLButtonElement,e2:HTMLButtonElement)=>{
@@ -109,6 +126,7 @@ const matchpos=async (e1:HTMLButtonElement,e2:HTMLButtonElement)=>{
         matchfaild(e1,e2);
     }
 }
+
 const onMouse=()=>{
     if(sltbut.value==null)return;
     if(bfbut.value!=sltbut.value)
@@ -162,13 +180,14 @@ onMounted(()=>{
 
 watch(allnums,(value)=>{
     if(value<=0){
-        console.log('out!');
+        result.value+=hpnums.value*10;
+        endgame();
     }
 })
 
 watch(hpnums,(value)=>{
     if(value<=0){
-        console.log('out!');
+        endgame();
     }
 })
 const colors = [
@@ -181,6 +200,18 @@ const colors = [
 </script>
 
 <template>
+    <el-dialog v-model="centerDialogVisible" title="任务成功！！" width="500" center>
+    <span>
+      你的得分：{{ result }}
+    </span>
+    <template #footer>
+      <div class="dialog-footer">
+        <el-button type="primary" @click="returnSelect">
+          返回主菜单
+        </el-button>
+      </div>
+    </template>
+  </el-dialog>
 <div class="container">
     <video :src="hdbg"  autoplay loop playsinline class="bg"></video>
     <div class="play" @click="onMouse">
