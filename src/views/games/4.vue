@@ -4,7 +4,7 @@
 
 <template>
  <div class="block">
-    <span class="demonstration">游戏说明</span>
+    <span class="demonstration">公告</span>
     <el-carousel height="50vh" motion-blur>
       <el-carousel-item style="text-align: center;">
         <el-text style="color: black; font-size: large;">
@@ -14,27 +14,12 @@
           	连接路径的长度没有限制，但是路径上的每一段都必须是直线，且不能有交叉。<br/>
           	当两个相同的图标被选中，并且它们之间的连接符合上述规则时，这对图标就会消失。<br/><br/>
 <el-text tag="b" style="font-size: large; color: black;">简单模式：</el-text><br/>
-	初始时间：2分钟<br/>
+	初始时间：100秒<br/>
 	每次消除增加：20秒<br/>
 <el-text tag="b" style="font-size: large; color: black;">困难模式：</el-text><br/>
-	初始时间：2分钟<br/>
+	初始时间：100秒<br/>
 	每次消除增加：15秒<br/>
 </el-text>
-      </el-carousel-item>
-
-      <el-carousel-item style="text-align: center;">
-       <el-text style="font-size: large;">
-<el-text tag="b" style="font-size: larger;">冰冻道具</el-text> <br/>
-功能：点击后，暂时停止计时器。<br/>
-持续时间：30秒。<br/>
-使用限制：每个关卡只能使用1次。<br/><br/>
-<el-text tag="b" style="font-size: larger;">交换道具</el-text> <br/>
-功能：允许玩家交换任意两个图案的位置，以创造匹配机会。<br/>
-使用限制：每个关卡只能使用1次。<br/><br/>
-<el-text tag="b" style="font-size: larger;">炸弹道具</el-text> <br/>
-功能：点击后，可以随机消除一对图案。<br/>
-使用限制：每个关卡只能使用1次。<br/>
-       </el-text>
       </el-carousel-item>
 
       <el-carousel-item style="text-align: center;">
@@ -52,6 +37,18 @@
 
       </el-text>
     </el-carousel-item>
+
+    <el-carousel-item style="text-align: center;">
+       <el-text style="font-size: large;">
+<el-text tag="b" style="font-size: larger;">《转身提瓦特大陆成为连连看高手》制作组通讯#1期</el-text> <br/> <br/>
+感谢大家游玩《转身提瓦特大陆成为连连看高手》。<br/>
+以下是本次制作组为大家带来的新的一期相关内容：<br/><br/>
+<el-text tag="b" style="font-size: larger;">通讯节点一</el-text> <br/>
+下一次版本更新中将更新更多的关卡，为玩家带来更丰富的体验。<br/><br/>
+<el-text tag="b" style="font-size: larger;">通讯节点二</el-text> <br/>
+下一次版本更新中新添加道具功能，每个关卡将拥有特殊的道具，为玩家提供更多的选择<br/><br/>
+       </el-text>
+      </el-carousel-item>
 
   <el-carousel-item>
   <img src="../../assets/icons/menjiang.png" alt="原神启动！">

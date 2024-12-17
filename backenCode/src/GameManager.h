@@ -13,6 +13,8 @@
 #include <memory>
 #include <fstream>
 #include  "ImageData.h"
+#include  "ImageData.h"
+#include "handleData.h"
 
 
         
@@ -24,7 +26,7 @@ private:
     
 public:
     std::vector<std::vector<ImageData>> grid;//首先定义一个二维数组
-    GameManager(std::string difficulty);//需要从前端获取游戏难度，从而从对应文件查找信息
+    GameManager();//需要从前端获取游戏难度，从而从对应文件查找信息
     ~GameManager();
     void readFileToGrid(std::string difficulty);//打开路径对应的文件，读取文件信息，初始化矩阵
     std::string run(int,int,int,int);//启动游戏
@@ -32,10 +34,16 @@ public:
     bool isEmptyGrid();//判断矩阵中是否存在不为零的元素
     void operate(int,int,int,int);//对矩阵进行操作
     void drawConnectPath(const std::vector<Position>& path);
-    //获得分数
-    int getPlayerScore() ;
-    //设置分数
-    void setPlayerScore(int playerScore);
+    void connectSQL();
+    void finishGame();
+    // 数据库连接
+    MYSQL* conn;
+    //进行游戏的用户
+    User newUser;
+    // 用户数据
+    std::vector<User> users;
+    //玩家得分
+    int playerScore = 200;
     
 };
 

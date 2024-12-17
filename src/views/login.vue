@@ -27,15 +27,18 @@ const animatline = ref<anime.AnimeTimelineInstance>();
 
   interface RuleForm{
     name:string
+    password:string
   }
   const rules = reactive<FormRules<RuleForm>>({
      name: [
     { required: true, message: '请输入用户名', trigger: 'blur' },
     { min: 3, max: 5, message: '最少3个字符', trigger: 'blur' },
-  ],
+  ],password:[{ required: true, message: '请输入密码', trigger: 'blur' }]
   })
+
   const form = reactive<RuleForm>({
   name: "",
+  password:""
 })
 
 const flower=[".flo1",".flo2",".flo3",".flo4",".flo5",".flo6",".flo7",".flo8",".flo9",".flo10"];
@@ -47,11 +50,25 @@ const startgame = (formEl: FormInstance)=>{
   
   formEl.validate((valid, fields)=>{
     if(valid){
+      const isNameExists = counterStore.tableData.find(item => item.name === form.name);
+      if(isNameExists){
+        if(isNameExists.password=== form.password){
       dialogFormVisible.value = false;
       counterStore.name=form.name;
+      counterStore.password=form.password;
       bgmusic.value.pause();
       hello.value.pause();
       router.push('/select');
+        }
+      }
+      else{
+        dialogFormVisible.value = false;
+      counterStore.name=form.name;
+      counterStore.password=form.password;
+      bgmusic.value.pause();
+      hello.value.pause();
+      router.push('/select');
+      }
     }
     else{
       console.log('error submit!', fields)
@@ -159,6 +176,7 @@ const playmusic=()=>{
 onMounted(()=>{
   window.addEventListener("click", playmusic);
   window.addEventListener("click", playbackground);
+  counterStore.getData();
   //背景出现
   animation.value=anime({
   targets:".main",
@@ -205,6 +223,9 @@ anime({
     <el-form :model="form" :rules="rules" ref="ruleFormRef">
       <el-form-item label="用户名" :label-width="0" prop="name">
         <el-input v-model="form.name" autocomplete="off" />
+      </el-form-item>
+      <el-form-item label="密码" :label-width="0" prop="password">
+        <el-input v-model="form.password" autocomplete="off" />
       </el-form-item>
     </el-form>
     <template #footer>

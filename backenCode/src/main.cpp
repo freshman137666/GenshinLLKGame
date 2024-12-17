@@ -1,10 +1,14 @@
 #include <iostream>
 #include "GameManager.h"
 #include "httplib.h"
+#include "User.h"
 using namespace std;
 
 void connectNet(){
-    GameManager gameManager("");
+    GameManager gameManager;
+    gameManager.connectSQL();
+   
+
     httplib::Server svr;
     svr.set_default_headers({
         { "Access-Control-Allow-Origin" , "*" }
@@ -12,12 +16,13 @@ void connectNet(){
 
     svr.Post("/startEZ",[&gameManager](const httplib::Request &req , httplib::Response &res){
         cout<<"easy"<<endl;
-        gameManager=GameManager("easy");
+        gameManager.readFileToGrid("easy");
     });
 
     svr.Post("/startEX",[&gameManager](const httplib::Request &req , httplib::Response &res){
         cout<<"hard"<<endl;
-        gameManager=GameManager("difficult");
+        gameManager.readFileToGrid("difficult");
+        
     });
 
     svr.Post("/selected",[&gameManager](const httplib::Request &req , httplib::Response &res){
@@ -31,6 +36,28 @@ void connectNet(){
         res.set_content(ans,"text/plain");
     });
 
+     svr.Post("/getUsers",[&gameManager](const httplib::Request &req , httplib::Response &res){
+        cout<<"send message"<<endl;
+        if (gameManager.conn == NULL) {
+        std::cerr << "mysql_init failed" << std::endl;
+    }   else{
+         json users_json =gameManager.users;
+         res.set_content(users_json.dump(), "application/json");
+    }
+        
+    });
+
+    svr.Post("/sendUsers",[&gameManager](const httplib::Request &req , httplib::Response &res){
+        cout<<"get message"<<endl;
+        if (gameManager.conn == NULL) {
+        std::cerr << "mysql_init failed" << std::endl;
+    } else{
+        json user_json =json::parse(req.body);
+        gameManager.newUser=user_json.get<User>();
+        gameManager.finishGame();
+    }
+    });
+
 
 
     cout<<"server starting"<<endl;
@@ -38,7 +65,7 @@ void connectNet(){
 }
 
 int main(){
+
     connectNet();
-    
     return 0;
 }

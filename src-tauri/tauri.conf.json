@@ -22,6 +22,7 @@
     }
   },
   "bundle": {
+    "externalBin":["binaries/genshen2"],
     "active": true,
     "targets": "all",
     "icon": [

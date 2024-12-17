@@ -5,9 +5,8 @@
 #include <iomanip>
 using namespace std;
 string canLink ="";
-GameManager::GameManager(string difficulty)
+GameManager::GameManager()
 {
-    readFileToGrid(difficulty);
 }
 
 GameManager::~GameManager()
@@ -15,7 +14,7 @@ GameManager::~GameManager()
 }
 void GameManager::readFileToGrid(string difficulty){
     //打开文件进行读取
-    ifstream inputFile("../GridDataFile/" + difficulty + ".txt");//../GridDataFile/data.txt
+    ifstream inputFile("GridDataFile/" + difficulty + ".txt");//../GridDataFile/data.txt
     if(!inputFile.is_open()){
         std::cerr << "无法打开文件进行读取"<<endl;
         return;
@@ -63,15 +62,16 @@ bool GameManager::isEmptyGrid(){
 void GameManager::operate(int r1,int c1,int r2,int c2){
     int row =r1;
     int col =c1;
-    cout <<"输入你想消除的两个图片: ";
+    cout <<row+"  "+col<<endl;
     ImageData startImage = grid[row][col];
     cout <<startImage.imageType <<endl;
     row=r2;
     col=c2;
+    cout <<row+"  "+col<<endl;
     ImageData endImage = grid[row][col];
     cout <<endImage.imageType <<endl;
     if(connectable(*this, startImage, endImage)){
-        cout << "两图片可以被消除"<<endl;
+        cout << "true,dude"<<endl;
         canLink="true";
         cout <<"连接路径："<<endl;
         vector<Position> connectPath = findConnectablePath(*this, startImage, endImage);
@@ -82,7 +82,7 @@ void GameManager::operate(int r1,int c1,int r2,int c2){
         
 
     }else{
-        cout << "两图片不能消除"<<endl;
+        cout << "false"<<endl;
         canLink="false";
     }
     
@@ -104,11 +104,38 @@ void GameManager::drawConnectPath(const vector<Position>& path) {
 }
 
 string GameManager::run(int r1,int c1,int r2,int c2){
-    //在矩阵还有元素不为零的情况下，保持循环
+    //在矩阵还有元素不为零的情况下
         printGrid();
         operate(r1,c1,r2,c2);
         cout<<canLink<<endl;
-        return canLink;
+        return canLink;   
+}
+
+void GameManager::connectSQL(){
+ conn = mysql_init(0);
+    if (conn == NULL) {
+        std::cerr << "mysql_init failed" << std::endl;
+        return ;
+    }
+
+    // 连接数据库
+    conn = mysql_real_connect(conn, "localhost", "root", "123456", "mycredit", 3306, NULL, 0);
+    if (conn == NULL) {
+        std::cerr << "MySQL connection failed: " << mysql_error(conn) << std::endl;
+        return ;
+    }
+    // 加载用户数据,从数据库中读取所有用户信息
+    loadUsersFromDB(conn,users);
+}
+
+void GameManager::finishGame(){
+    if (conn == NULL) {
+        std::cerr << "mysql_init failed" << std::endl;
+        return ;
+    }
+    //游戏结束后
+    addNewUserToDB(conn, newUser, users);
+    mysql_close(conn);
 }
 
 

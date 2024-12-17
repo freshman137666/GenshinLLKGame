@@ -34,7 +34,8 @@ const centerDialogVisible = ref(false)
 const endgame =()=>{
     endmusic.value.play();
     store.gate.score=result.value;
-    store.addData();
+    store.sendData();
+    store.getData();
     bgmusic.value.pause();
     centerDialogVisible.value = true
 }
@@ -200,6 +201,7 @@ const colors = [
 </script>
 
 <template>
+     <el-button class="finishgame" type="danger" round @click="endgame">点击结算</el-button>
     <el-dialog v-model="centerDialogVisible" title="任务成功！！" width="500" center>
     <span>
       你的得分：{{ result }}
@@ -666,6 +668,11 @@ const colors = [
 </template>
 
 <style scoped>
+.finishgame{
+    position: absolute;
+    right: 30px;
+    top: 30px;
+}
 .score{
     font-size: 7vw;
     color: rgb(63, 155, 236);
