@@ -41,7 +41,23 @@ void addNewUserToDB(MYSQL* conn, const User& newUser, std::vector<User>& users) 
         return;
     }
 
-    users.push_back(newUser);
+    // 检查是否有重复的用户，若有则用score较大的替代原有的用户
+    bool foundDuplicate = false;
+    for (auto& user : users) {
+        if (user.username == newUser.username && user.level == newUser.level) {
+            // 如果找到重复的用户，比较score大小，替代原用户
+            if (user.score < newUser.score) {
+                user.score = newUser.score; // 替换score
+            }
+            foundDuplicate = true;
+            break; // 找到重复项后停止遍历
+        }
+    }
+
+    // 如果没有找到重复的用户，添加新用户
+    if (!foundDuplicate) {
+        users.push_back(newUser);
+    }
     std::sort(users.begin(), users.end(), [](const User& a, const User& b) {
         return a.score > b.score;
     });
