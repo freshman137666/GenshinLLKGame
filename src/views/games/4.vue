@@ -1,5 +1,7 @@
 <script setup lang="ts">
-
+import skill1 from '../../assets/icons/boom.png'
+import skill2 from '../../assets/icons/exchang.png'
+import skill3 from '../../assets/icons/healing.png'
 </script>
 
 <template>
@@ -37,6 +39,24 @@
 
       </el-text>
     </el-carousel-item>
+
+    <el-carousel-item style="text-align: center;">
+        <el-text style="color: black; font-size: large;">
+          <el-text tag="b" style="font-size: larger; color: black;">道具介绍：</el-text> <br/>
+          战斗中，每个道具只能使用一次<br/>
+          <el-text tag="ins" style="color: black; font-size: large;">充值可以获得更多的道具使用次数</el-text><br/><br/><br/>
+          <el-image style="width: 50px; height: 50px" :src="skill1" :fit="'cover'" />
+          <el-text tag="b" style="font-size: large; color: black;">爆裂黎明：</el-text><br/>
+立刻消除一对可匹配的图片<br/>
+<el-image style="width: 50px; height: 50px" :src="skill2" :fit="'cover'" />
+<el-text tag="b" style="font-size: large; color: black;">生态耦合：</el-text><br/>
+选择2个图片，交换位置<br/>
+<el-image style="width: 50px; height: 50px" :src="skill3" :fit="'cover'" />
+<el-text tag="b" style="font-size: large; color: black;">治疗强化·γ型：</el-text><br/>
+立刻恢复45点生命
+</el-text>
+
+      </el-carousel-item>
 
     <el-carousel-item style="text-align: center;">
        <el-text style="font-size: large;">

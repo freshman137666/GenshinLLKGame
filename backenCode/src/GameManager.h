@@ -42,6 +42,7 @@ public:
     User newUser;
     // 用户数据
     std::vector<User> users;
+
     //玩家得分
     int playerScore = 200;
     

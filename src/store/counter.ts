@@ -70,14 +70,16 @@ export const useStore=defineStore('counter',()=>{
       score: gate.value.score,
       password: password.value,
         }
-      tableData.value.push(newdata);  
+      tableData.value.push(newdata); 
+
+
         try {
-            await axios.post("http://localhost:11451/sendUsers",newdata,{
+          const response=await axios.post("http://localhost:11451/sendUsers",newdata,{
                 headers: {
                     "Content-Type": "application/json",
                   },
             });
-            console.log("数据发送成功");
+            console.log("数据发送成功", response.data);
           } catch (error) {
             console.error("请求失败:", error);
           }

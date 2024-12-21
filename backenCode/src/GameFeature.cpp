@@ -3,31 +3,38 @@
 #include "DrawPath.h"
 #include <random> 
 #include <algorithm>
+#include <bits/this_thread_sleep.h>
 using namespace std;
+
+bombValue bbvalue;
+
 vector<Position> showHint(GameManager& gameManager) {
     vector<Position> hintPath; // 用于存储提示路径
     vector<vector<ImageData>> grid = gameManager.grid;
     // 遍历整个网格，寻找可以连接的图片对
     for (int i = 1; i <= grid.size() - 2; ++i) {
         for (int j = 1; j <= grid[0].size() - 2; ++j) {
+            auto& cell1 = grid[i][j]; // 使用引用减少拷贝
             // 跳过空格
-            if (grid[i][j].imageType == 0) {
+            if (cell1.imageType == 0) {
                 continue;
             }
-
             // 找到当前位置的图片
-            ImageData startImage = grid[i][j];
+            ImageData startImage = cell1;
+             cout<<"pic1:"<<startImage.position.rows<<"-"<<startImage.position.cols<<endl;
 
             // 再次遍历寻找可以连接的图片
             for (int k = i; k <= grid.size() - 2; ++k) {
                 for (int l = (k == i ? j + 1 : 1); l <= grid[0].size() - 2; ++l) {
                     // 跳过空格
-                    if (grid[k][l].imageType == 0) {
+                    auto& cell = grid[k][l]; // 使用引用减少拷贝
+                    if (cell.imageType == 0) {
                         continue;
                     }
 
                     // 找到另一张图片
-                    ImageData endImage = grid[k][l];
+                    ImageData endImage = cell;
+                    cout<<"pic2:"<<endImage.position.rows<<"-"<<endImage.position.cols<<endl;
 
                     // 判断这两个图片是否可以连接
                     if (startImage.imageType == endImage.imageType && connectable(gameManager, startImage, endImage)) {
@@ -40,7 +47,7 @@ vector<Position> showHint(GameManager& gameManager) {
                         return hintPath;  // 找到一对连接的图片后返回
                     }
                 }
-            }
+            }      
         }
     }
 
@@ -49,26 +56,30 @@ vector<Position> showHint(GameManager& gameManager) {
 }
 void bomb(GameManager& gameManager){
     vector<Position> hintPath = showHint(gameManager);
+    if(hintPath.size()<1){
+    bbvalue.bombValue1="false";
+    return;
+    }
+    
     ImageData startImage, endImage;
     
     startImage = gameManager.grid[hintPath[0].rows][hintPath[0].cols];
     endImage = gameManager.grid[hintPath[1].rows][hintPath[1].cols];
-    
-    cout <<"使用炸弹功能"<<endl;
+    bbvalue.bombValue1=to_string(hintPath[0].rows)+"-"+to_string(hintPath[0].cols);
+    bbvalue.bombValue2=to_string(hintPath[1].rows)+"-"+to_string(hintPath[1].cols);
+    cout <<"boom!hahaha"<<endl;
 
     eraseImage(gameManager, startImage, endImage );
-    
-
 
 }
+
 void exchange(GameManager& gameManager, ImageData startImage, ImageData endImage){
-    cout << "使用交换功能" << endl;
-    
     if(checkImagesEmpty(startImage, endImage)){
         cout << "交换图片" << endl;
         ImageData temp = startImage;
-        gameManager.grid[startImage.position.rows][startImage.position.cols] = endImage;
-        gameManager.grid[endImage.position.rows][endImage.position.cols] = temp;
+        gameManager.grid[startImage.position.rows][startImage.position.cols].imageType = endImage.imageType;
+        gameManager.grid[endImage.position.rows][endImage.position.cols].imageType = temp.imageType;
+        gameManager.printGrid();
     }
 
 }

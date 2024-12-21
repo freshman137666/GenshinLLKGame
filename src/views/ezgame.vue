@@ -33,7 +33,6 @@ const endgame =()=>{
     endmusic.value.play();
     store.gate.score=result.value;
     store.sendData();
-    store.getData();
     bgmusic.value.pause();
     centerDialogVisible.value = true
 }
@@ -41,6 +40,15 @@ const returnSelect=()=>{
     centerDialogVisible.value =false;
     router.push('/select');
 }
+const boomvalue=ref({
+    v1:'',
+    v2:''
+})
+const isused1=ref(false);
+const isused2=ref(false);
+const isused3=ref(false);
+const givemoney=ref(false);
+
 const drs =()=>{
     if(hpnums.value>0){
         hpnums.value--;
@@ -116,12 +124,23 @@ const istrue =async()=>{
 const matchpos=async (e1:HTMLButtonElement,e2:HTMLButtonElement)=>{
     console.log(e1.value +","+ e2.value);
     selectmessage.value=`${e1.value},${e2.value}`;
-    await istrue();
-    if(isTrue.value){
-        matchsuccess(e1,e2);
+    if(canExchange.value){
+        try {
+        await axios.post("http://localhost:11451/exchange",selectmessage.value);
+    } catch (error) {
+        console.error("Error fetching state:", error);
+    }
+        canExchange.value=false;
+        exchange(e1,e2);
     }
     else{
+        await istrue();
+        if(isTrue.value){
+        matchsuccess(e1,e2);
+       }
+        else{
         matchfaild(e1,e2);
+       }
     }
 }
 
@@ -156,6 +175,41 @@ else{
     }
 }
 
+const useboom=async()=>{
+    try {
+        const response = await axios.get("http://localhost:11451/boom");
+        boomvalue.value=response.data;
+        console.log(boomvalue.value.v1);
+        console.log(boomvalue.value.v2);
+        
+    } catch (error) {
+        console.error("Error fetching state:", error);
+    }
+    const button1 = document.querySelector(`button[value="${boomvalue.value.v1}"]`) as HTMLButtonElement;
+    const button2 = document.querySelector(`button[value="${boomvalue.value.v2}"]`) as HTMLButtonElement;
+    matchsuccess(button1,button2);
+    isused1.value=true;
+}
+const canExchange=ref(false);
+const useExchange=()=>{
+    canExchange.value=true;
+    isused2.value=true;
+}
+
+const exchange=(e1:HTMLButtonElement,e2:HTMLButtonElement)=>{
+    const tempClass = e1.className;
+    e1.className = e2.className;
+    e2.className = tempClass;
+    anime({
+        targets:[e1,e2],
+        scale:1
+    }).finished
+}
+
+const useHealing=()=>{
+    hpnums.value+=45;
+    isused3.value=true;
+}
 onMounted(()=>{
     anime({
         targets:'.rows',
@@ -199,6 +253,15 @@ const colors = [
 
 <template>
     <el-button class="finishgame" type="danger" round @click="endgame">点击结算</el-button>
+    <el-button class="skillBoom" type="danger" :loading="isused1&&!givemoney" @click="useboom"></el-button>
+    <el-button class="skillchang" type="danger" :loading="isused2&&!givemoney" @click="useExchange"></el-button>
+    <div class="cheater">
+        <el-switch v-model="givemoney" size="large"
+        style="--el-switch-on-color: #13ce66; --el-switch-off-color: #ff4949"
+        active-text="我为米哈游充过648"
+        inactive-text="我没有给米哈游充值" 
+        inline-prompt/></div>
+    <el-button class="skillhealing" type="danger" :loading="isused3&&!givemoney" @click="useHealing"></el-button>
     <el-dialog v-model="centerDialogVisible" title="任务成功！！" width="500" center>
     <span>
       你的得分：{{ result }}
@@ -488,6 +551,42 @@ const colors = [
 </template>
 
 <style scoped>
+.skillBoom{
+    background-image: url(../assets/icons/boom.png);
+    background-position: center;
+    background-size: cover;
+    position: absolute;
+    height: 75px;
+    width: 75px;
+    bottom: 30px;
+    left: 200px;
+
+}
+.skillchang{
+    background-image: url(../assets/icons/exchang.png);
+    background-position: center;
+    background-size: cover;
+    position: absolute;
+    height: 75px;
+    width: 75px;
+    bottom: 30px;
+    left: 300px;
+}
+.skillhealing{
+    background-image: url(../assets/icons/healing.png);
+    background-position: center;
+    background-size: cover;
+    position: absolute;
+    height: 75px;
+    width: 75px;
+    bottom: 30px;
+    left: 400px;
+}
+.cheater{
+    position: absolute;
+    right: 145px;
+    bottom: 25px;
+}
 .finishgame{
     position: absolute;
     right: 30px;

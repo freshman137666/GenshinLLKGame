@@ -20,9 +20,11 @@ bool connectable(GameManager& gameManager, ImageData startImage, ImageData endIm
         return false;
     }else if (distance(startImage.position, endImage.position) <= 1) {
         return true; // 相邻图片可以直接连接
-    }else if (edgeConnectable(gameManager, startImage, endImage)) {
-        return true; // 边界上的图片可连接
-    }else if (rowConnectable(gameManager, startImage, endImage) || colConnectable(gameManager, startImage, endImage)) {
+    }
+    // else if (edgeConnectable(gameManager, startImage, endImage)) {
+    //     return true; // 边界上的图片可连接
+    // }
+    else if (rowConnectable(gameManager, startImage, endImage) || colConnectable(gameManager, startImage, endImage)) {
         return true; // 同一行或列可连接
     }else if(bfsConnectable(gameManager, startImage, endImage)){
         return true;

@@ -22,7 +22,8 @@ void GameManager::readFileToGrid(string difficulty){
     int row ;
     int col;
     inputFile >> row >> col;
-   
+    
+    grid.clear();
     grid.resize(row+2,vector<ImageData>(col+2));
     //对矩阵进行初始化
     for(int i =1;i<=row;i++){
@@ -71,18 +72,18 @@ void GameManager::operate(int r1,int c1,int r2,int c2){
     ImageData endImage = grid[row][col];
     cout <<endImage.imageType <<endl;
     if(connectable(*this, startImage, endImage)){
-        cout << "true,dude"<<endl;
         canLink="true";
-        cout <<"连接路径："<<endl;
-        vector<Position> connectPath = findConnectablePath(*this, startImage, endImage);
-        drawConnectPath(connectPath);
-        cout << "消除图片："<<endl;
+        // cout <<"连接路径："<<endl;
+        // vector<Position> connectPath = findConnectablePath(*this, startImage, endImage);
+        // drawConnectPath(connectPath);
         eraseImage(*this, startImage, endImage);
-        cout << "消除成功"<<endl;
+        printGrid();
+        cout << "succese!!"<<endl;
         
 
     }else{
-        cout << "false"<<endl;
+        cout << "false!!"<<endl;
+        printGrid();
         canLink="false";
     }
     
@@ -107,7 +108,6 @@ string GameManager::run(int r1,int c1,int r2,int c2){
     //在矩阵还有元素不为零的情况下
         printGrid();
         operate(r1,c1,r2,c2);
-        cout<<canLink<<endl;
         return canLink;   
 }
 
@@ -135,7 +135,6 @@ void GameManager::finishGame(){
     }
     //游戏结束后
     addNewUserToDB(conn, newUser, users);
-    mysql_close(conn);
 }
 
 
