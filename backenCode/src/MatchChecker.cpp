@@ -1,13 +1,13 @@
 #include "MatchChecker.h"
 
 #include <cmath>
-using namespace std;
+
 //计算两个坐标之间的距离
 double distance(Position startPosition,Position endPosition2){
     return std::sqrt(pow(endPosition2.rows - startPosition.rows,2) + pow(endPosition2.cols - startPosition.cols,2));
 }
 bool checkImagesEmpty(ImageData startImage,ImageData endImage){
-    return startImage.imageType != 0 && endImage.imageType != 0;
+    return startImage.imageType != 0 && endImage.imageType != 0; 
 }
 bool connectable(GameManager& gameManager, ImageData startImage, ImageData endImage) {
     if(startImage.imageType == 0 || endImage.imageType == 0){
@@ -20,11 +20,9 @@ bool connectable(GameManager& gameManager, ImageData startImage, ImageData endIm
         return false;
     }else if (distance(startImage.position, endImage.position) <= 1) {
         return true; // 相邻图片可以直接连接
-    }
-    // else if (edgeConnectable(gameManager, startImage, endImage)) {
-    //     return true; // 边界上的图片可连接
-    // }
-    else if (rowConnectable(gameManager, startImage, endImage) || colConnectable(gameManager, startImage, endImage)) {
+    }else if (edgeConnectable(gameManager, startImage, endImage)) {
+        return true; // 边界上的图片可连接
+    }else if (rowConnectable(gameManager, startImage, endImage) || colConnectable(gameManager, startImage, endImage)) {
         return true; // 同一行或列可连接
     }else if(bfsConnectable(gameManager, startImage, endImage)){
         return true;
@@ -72,67 +70,72 @@ bool colConnectable(GameManager& gameManager, ImageData startImage, ImageData en
 }
 
 //对于在边上的相同图片，允许连接
-bool edgeConnectable(GameManager& gameManager,ImageData startImage,ImageData endImage){
-   bool isEdgeConnectable = false;
-   int start,end;
-   //若两个图片位于列边界
-    if(startImage.position.cols == endImage.position.cols && startImage.position.cols == gameManager.grid.size()-2){
-        int col = startImage.position.cols +1;
-        start = min(startImage.position.rows , endImage.position.rows);
-        end = max(startImage.position.rows , endImage.position.rows);
-
-        for(int i =start;i<end;i++){
-            if(gameManager.grid[i][col ].imageType != 0){
-                isEdgeConnectable = false;
-            }else{
-                 isEdgeConnectable = true;
+bool edgeConnectable(GameManager& gameManager, ImageData startImage, ImageData endImage) {
+    // 网格大小
+    int rows = gameManager.grid.size();
+    int cols = gameManager.grid[0].size();
+    
+    // 检查右边列边界
+    if (startImage.position.cols == cols - 2 && endImage.position.cols == cols - 2) {
+        int col = cols - 1;  // 边界列
+        int start = min(startImage.position.rows, endImage.position.rows);
+        int end = max(startImage.position.rows, endImage.position.rows);
+        
+        // 检查边界路径是否通畅
+        for (int row = start + 1; row < end; row++) {
+            if (gameManager.grid[row][col].imageType != 0) {
+                return false;
             }
         }
-
-    }else if(startImage.position.rows == endImage.position.rows && startImage.position.rows == gameManager.grid.size()-2){
-        int row = startImage.position.rows+1;
-        start = min(startImage.position.cols , endImage.position.cols);
-        end = max(startImage.position.cols , endImage.position.cols);
-
-        for(int i = start;i<end;i++){
-            if(gameManager.grid[i][row ].imageType != 0){
-                isEdgeConnectable = false;
-            }else{
-                 isEdgeConnectable = true;
-            }
-        }
-    }
-    // 判断左边列边界 (col == 0)
-    else if (startImage.position.cols == 1 && endImage.position.cols == 1) {
-        int col = startImage.position.cols -1;
-        start = min(startImage.position.rows , endImage.position.rows);
-        end = max(startImage.position.rows , endImage.position.rows);
-
-        for (int i = start; i < end; i++) {
-            if(gameManager.grid[i][col ].imageType != 0){
-                isEdgeConnectable = false;
-            }else{
-                 isEdgeConnectable = true;
-            }
-        }
-    }
-    // 判断上边行边界 (row == 0)
-    else if (startImage.position.rows == 1 && endImage.position.rows == 1) {
-        int row = startImage.position.rows - 1;
-        start = min(startImage.position.cols , endImage.position.cols);
-        end = max(startImage.position.cols , endImage.position.cols);
-
-        for (int i = start; i < end; i++) {
-            if(gameManager.grid[i][row ].imageType != 0){
-                isEdgeConnectable = false;
-            }else{
-                 isEdgeConnectable = true;
-            }
-        }
+        return true;
     }
     
-    return isEdgeConnectable;
-   
+    // 检查下边行边界
+    if (startImage.position.rows == rows - 2 && endImage.position.rows == rows - 2) {
+        int row = rows - 1;  // 边界行
+        int start = min(startImage.position.cols, endImage.position.cols);
+        int end = max(startImage.position.cols, endImage.position.cols);
+        
+        // 检查边界路径是否通畅
+        for (int col = start + 1; col < end; col++) {
+            if (gameManager.grid[row][col].imageType != 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    // 检查左边列边界
+    if (startImage.position.cols == 1 && endImage.position.cols == 1) {
+        int col = 0;  // 边界列
+        int start = min(startImage.position.rows, endImage.position.rows);
+        int end = max(startImage.position.rows, endImage.position.rows);
+        
+        // 检查边界路径是否通畅
+        for (int row = start + 1; row < end; row++) {
+            if (gameManager.grid[row][col].imageType != 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    // 检查上边行边界
+    if (startImage.position.rows == 1 && endImage.position.rows == 1) {
+        int row = 0;  // 边界行
+        int start = min(startImage.position.cols, endImage.position.cols);
+        int end = max(startImage.position.cols, endImage.position.cols);
+        
+        // 检查边界路径是否通畅
+        for (int col = start + 1; col < end; col++) {
+            if (gameManager.grid[row][col].imageType != 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    return false;
 }
 bool bfsConnectable(GameManager& gameManager, ImageData startImage, ImageData endImage) {
     // 定义方向数组，用于搜索四个相邻方向
