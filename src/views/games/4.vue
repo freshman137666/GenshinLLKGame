@@ -44,7 +44,7 @@ import skill3 from '../../assets/icons/healing.png'
         <el-text style="color: black; font-size: large;">
           <el-text tag="b" style="font-size: larger; color: black;">道具介绍：</el-text> <br/>
           战斗中，每个道具只能使用一次<br/>
-          <el-text tag="ins" style="color: black; font-size: large;">充值可以获得更多的道具使用次数</el-text><br/><br/><br/>
+          <el-text tag="ins" style="color: black; font-size: large;">充值可以获得更多的道具使用次数</el-text><br/>
           <el-image style="width: 50px; height: 50px" :src="skill1" :fit="'cover'" />
           <el-text tag="b" style="font-size: large; color: black;">爆裂黎明：</el-text><br/>
 立刻消除一对可匹配的图片<br/>

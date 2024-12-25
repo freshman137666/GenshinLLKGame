@@ -82,6 +82,8 @@ void connectNet(){
 
 
    svr.Post("/bye",[&gameManager](const httplib::Request &req , httplib::Response &res){
+    res.status = 200;
+    res.set_content("bye!", "text/plain");
     mysql_close(gameManager.conn);
     exit(0);
    });

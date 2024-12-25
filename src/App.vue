@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { invoke } from '@tauri-apps/api/core';
-import { listen } from '@tauri-apps/api/event';
 import axios from "axios";
-
+import { TauriEvent } from '@tauri-apps/api/event';
+import { getCurrentWindow } from "@tauri-apps/api/window";
+import { onMounted } from 'vue';
 
 
 async function Sidecar() {
@@ -15,19 +16,28 @@ async function Sidecar() {
 }
 Sidecar();
 
-const exitProgram = async () => {
-  try {
-    await axios.post("http://localhost:11451/bye");
-    console.log("Goodbye request sent!");
-  } catch (error) {
-    console.error("Error sending goodbye request:", error);
-  }
-};
 
-// 监听 exit-program 事件
-listen('exit-program', () => {
-  exitProgram();
-});
+const closeTauri=async()=>{
+  try {
+    await invoke('close_tauri');
+    console.log('Sidecar launched successfully');
+  } catch (err) {
+    console.error('Failed to launch Sidecar:', err);
+  }
+}
+
+onMounted(async()=>{
+  getCurrentWindow().once(TauriEvent.WINDOW_CLOSE_REQUESTED,async () => {
+  try {
+     await axios.post("http://localhost:11451/bye");
+   } catch (error) {
+     console.error("Error while sending POST request:", error);
+   } finally {
+     closeTauri(); 
+   }
+})
+}
+)
 
 </script>
 

@@ -5,6 +5,9 @@ import bgmusic_ from '../music/ez1.flac'
 import rightmusic_ from '../music/right.mp3'
 import wrongmusic_ from '../music/wrong.mp3'
 import endmusic_ from '../assets/music/endgame.wav'
+import skillmus_ from '../assets/music/skill1.wav'
+import skillmus2_ from '../assets/music/skill2.wav'
+import skillmus3_ from '../assets/music/skill3.wav'
 import ezbg from '../icons/ezbg.mp4'
 import tourist from '../assets/icons/avatar.png'
 import axios from 'axios';
@@ -20,6 +23,9 @@ const bgmusic = ref(new Audio(bgmusic_))
 const rightmusic = ref(new Audio(rightmusic_))
 const wrongmusic =ref(new Audio(wrongmusic_))
 const endmusic =ref(new Audio(endmusic_))
+const skill1 =ref(new Audio(skillmus_))
+const skill2 =ref(new Audio(skillmus2_))
+const skill3 =ref(new Audio(skillmus3_))
 const hpnums = ref(100);
 const allnums = ref(40);
 const result = ref(0);
@@ -31,6 +37,7 @@ const selectmessage =ref("");
 const centerDialogVisible = ref(false)
 const endgame =()=>{
     endmusic.value.play();
+    result.value+=hpnums.value*10
     store.gate.score=result.value;
     store.sendData();
     bgmusic.value.pause();
@@ -179,6 +186,7 @@ const useboom=async()=>{
     try {
         const response = await axios.get("http://localhost:11451/boom");
         boomvalue.value=response.data;
+        skill1.value.play();
         console.log(boomvalue.value.v1);
         console.log(boomvalue.value.v2);
         
@@ -200,6 +208,7 @@ const exchange=(e1:HTMLButtonElement,e2:HTMLButtonElement)=>{
     const tempClass = e1.className;
     e1.className = e2.className;
     e2.className = tempClass;
+    skill2.value.play();
     anime({
         targets:[e1,e2],
         scale:1
@@ -207,6 +216,7 @@ const exchange=(e1:HTMLButtonElement,e2:HTMLButtonElement)=>{
 }
 
 const useHealing=()=>{
+    skill3.value.play();
     hpnums.value+=45;
     isused3.value=true;
 }
@@ -252,17 +262,39 @@ const colors = [
 </script>
 
 <template>
-    <el-button class="finishgame" type="danger" round @click="endgame">点击结算</el-button>
-    <el-button class="skillBoom" type="danger" :loading="isused1&&!givemoney" @click="useboom"></el-button>
-    <el-button class="skillchang" type="danger" :loading="isused2&&!givemoney" @click="useExchange"></el-button>
+    <el-tooltip
+        effect="light"
+        content="立刻消除一对可匹配的图片"
+        placement="top-start"
+      >
+      <el-button class="skillBoom" type="danger" :loading="isused1&&!givemoney" @click="useboom"></el-button>
+     </el-tooltip>
+     
+     <el-tooltip
+        effect="light"
+        content="选择2个图片，交换位置"
+        placement="top-start"
+      >
+      <el-button class="skillchang" type="danger" :loading="isused2&&!givemoney" @click="useExchange"></el-button>
+    </el-tooltip>
+
+    <el-tooltip
+        effect="light"
+        content="立刻恢复45点生命"
+        placement="top-start"
+      >
+      <el-button class="skillhealing" type="danger" :loading="isused3&&!givemoney" @click="useHealing"></el-button>
+    </el-tooltip>
+
+    <el-button class="finishgame" type="danger" round @click="endgame">点击结算</el-button> 
     <div class="cheater">
         <el-switch v-model="givemoney" size="large"
         style="--el-switch-on-color: #13ce66; --el-switch-off-color: #ff4949"
         active-text="我为米哈游充过648"
         inactive-text="我没有给米哈游充值" 
         inline-prompt/></div>
-    <el-button class="skillhealing" type="danger" :loading="isused3&&!givemoney" @click="useHealing"></el-button>
     <el-dialog v-model="centerDialogVisible" title="任务成功！！" width="500" center>
+
     <span>
       你的得分：{{ result }}
     </span>

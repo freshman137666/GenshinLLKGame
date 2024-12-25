@@ -63,6 +63,8 @@ export const useStore=defineStore('counter',()=>{
           }
     }
 
+
+
     const sendData=async()=>{
       const newdata={
       name: name.value,
@@ -71,7 +73,6 @@ export const useStore=defineStore('counter',()=>{
       password: password.value,
         }
       tableData.value.push(newdata); 
-
 
         try {
           const response=await axios.post("http://localhost:11451/sendUsers",newdata,{
@@ -82,6 +83,8 @@ export const useStore=defineStore('counter',()=>{
             console.log("数据发送成功", response.data);
           } catch (error) {
             console.error("请求失败:", error);
+          } finally{
+            getData();
           }
     }
 
